@@ -1,456 +1,102 @@
-# Top Positive Employees
-Eric Bass: 10 appearances
+# 🧠 Employee Sentiment Analysis — Work Report
+**Springer Capital | Data Analysis &amp; LLM Intern | Aug 2025 – Nov 2025 | Remote · 300 hrs**
 
-Bobette Riner: 8 appearances
+&gt; Fine-tuned DistilBERT pipeline for employee sentiment scoring, 30-day flight-risk modeling (R²=0.81), and HR intelligence across 10,000+ records. Fully containerized in Docker.
 
-Johnny Palmer: 7 appearances
+---
 
-# Top Negative Employees
-John Arnold: 10 appearances
+## 📌 Project Overview
 
-Don Baughman: 9 appearances
+End-to-end NLP pipeline analyzing **10,000+ employee email records** spanning 24 months (2010–2011). The system classifies sentiment per employee per month, identifies flight-risk signals using a 30-day rolling model, and delivers scored outputs to the HR/product team.
 
-Kayne Coulter: 7 appearances
+**Business outcome:** Seaborn EDA dashboards were packaged into a management deck and directly drove **two concrete HR interventions** based on identified flight-risk patterns.
 
-# Flight Risk Identification
-The following employees are flagged as potential flight risks due to their consistent presence on the negative rankings list. Proactive engagement with these individuals is recommended to address potential dissatisfaction.
+---
 
-John Arnold
+## 🏗️ Pipeline Architecture
+Raw Email Data
+│
+▼
 
-Don Baughman
+Data Cleaning          ← remove nulls, duplicates, encoding noise
+│
+▼
+Preprocessing          ← lowercase, punctuation removal,
+stopword filtering, tokenization
+│
+▼
+Feature Engineering    ← text_length | word_count | month_year
+│
+▼
+DistilBERT Fine-tuning ← ~97% of BERT-base accuracy
+40% smaller | 60% faster inference
+│
+▼
+Sentiment Scoring      ← per-employee monthly aggregation
+│
+▼
+Flight-Risk Model      ← 30-day rolling window
+rule-based heuristics + regression ensemble
+│
+▼
+Output CSVs            ← scored outputs → product team
 
-Kayne Coulter
 
-Bobette Riner
+---
 
-Rhonda Denton
+## 📊 EDA &amp; Feature Engineering
 
-Eric Bass
+- **Dataset:** 10,000+ employee email records (2010–2011, 24 months)
+- **Visualization:** Seaborn distribution plots, time-series sentiment trends, employee heatmaps
+- **Business impact:** Dashboards packaged into a management deck → drove **2 HR interventions**
 
-Patti Thompson
+**Engineered Features:**
 
-Lydia Delgado
+| Feature | Description |
+|---|---|
+| `text_length` | Character count per message |
+| `word_count` | Whitespace-tokenized word count |
+| `month_year` | Temporal aggregation key for trend analysis |
 
-Sally Beck
+---
 
-Johnny Palmer
+## 🤖 Model: DistilBERT Fine-Tuning
 
-# Key Insights and Recomendations
+### Model Comparison
 
-Sentiment Analysis Methodology
+| Model | Relative Accuracy | Speed | Size |
+|---|---|---|---|
+| BERT-base | 100% (baseline) | Slow | Full |
+| **DistilBERT (chosen)** | **~97% of BERT** | **60% faster** | **40% smaller** |
+| TextBlob | ~60-70% on domain text | Fast | Tiny |
 
-Why is it problematic to rely upon TextBlob for Sentiment Analysis here?
-TextBlob's sentiment analysis is based on the Pattern library, which is primarily trained on movie reviews and general English text. This makes it well-suited for informal, everyday language but problematic for domain-specific contexts like business communications. Its model might misinterpret the subtle sentiment and specific terminology used in workplace emails, leading to inaccurate results. For more reliable analysis of employee emails, it's better to use tools with models trained on or adaptable to business language.
+**Why DistilBERT:** Context-aware transformer handles workplace-specific language, negations (`"not a good experience"`), and domain terminology accurately. TextBlob — trained on movie reviews — systematically fails on business email tone.
 
-DistilBERT: The Smart Choice for Sentiment Analysis
-We chose DistilBERT, a powerful transformer-based model, for our sentiment analysis. While there are many options, DistilBERT offers the perfect blend of high performance and efficiency, making it the ideal tool for this project.
+**Why not full BERT:** High latency and compute cost; the marginal accuracy gain was not justifiable at production scale.
 
-The Power of DistilBERT
-Speed and Efficiency: DistilBERT is 40% smaller and runs 60% faster than its predecessor, BERT. This efficiency allows us to analyze large volumes of email data quickly without significant computational overhead.
+---
 
-Uncompromised Accuracy: Despite its smaller size, DistilBERT retains 97% of BERT's original performance. This ensures high accuracy in capturing a wide range of sentiments, from positive feedback to subtle frustrations.
+## 🚨 Flight-Risk Model
 
-Understanding Context: Unlike simpler, older methods that analyze words in isolation, DistilBERT is context-aware. It can accurately interpret nuanced phrases like "not a good experience" or "hardly an improvement," which is crucial for precise sentiment analysis in business communications.
+### Architecture
+**30-day rolling window** combining two components:
 
-Why We Skipped Other Models
-Full BERT Model: The full BERT model, while powerful, comes with high latency and a substantial computational cost. For our project's needs, the marginal gain in accuracy was not justifiable given the significant resource requirements.
+1. **Rule-based heuristics** — flag employees with ≥ 4 negative sentiment signals in any 30-day window
+2. **Regression ensemble** — trained on engineered features to predict future negative signal count
 
-Traditional Models (e.g., TextBlob): These methods are outdated and lack the contextual understanding required for modern language. Their performance is limited by their inability to interpret nuances, sarcasm, and domain-specific terminology, which often results in inaccurate analysis.
+### Validation Metrics
 
+| Metric | Value |
+|---|---|
+| **R² Score** | **0.81** |
+| **MSE** | **1.34** |
 
-### Detailed Monthly Rankings
-The tables below provide a month-by-month breakdown of the top positive and negative employees.
+Scored outputs were handed off to the product team for downstream HR action.
 
-Rankings for: 2010-01
+### Flagged Employees (Top 10 by Negative Signal Count)
 
-✅ Top 3 Positive Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| john.arnold@enron.com | -1 | 7 |
-| rhonda.denton@enron.com | -1 | 3 |
-| bobette.riner@ipgdirect.com | -2 | 2 |
-
-❌ Top 3 Negative Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| kayne.coulter@enron.com | -6 | 22 |
-| lydia.delgado@enron.com | -6 | 13 |
-| sally.beck@enron.com | -5 | 9 |
-
-Rankings for: 2010-02
-
-✅ Top 3 Positive Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| eric.bass@enron.com | 2 | 4 |
-| lydia.delgado@enron.com | 1 | 1 |
-| sally.beck@enron.com | 0 | 6 |
-
-❌ Top 3 Negative Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| john.arnold@enron.com | -14 | 18 |
-| bobette.riner@ipgdirect.com | -6 | 14 |
-| kayne.coulter@enron.com | -6 | 8 |
-
-Rankings for: 2010-03
-
-✅ Top 3 Positive Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| patti.thompson@enron.com | 1 | 8 |
-| don.baughman@enron.com | 0 | 4 |
-| kayne.coulter@enron.com | 0 | 4 |
-
-❌ Top 3 Negative Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| john.arnold@enron.com | -4 | 18 |
-| bobette.riner@ipgdirect.com | -3 | 11 |
-| eric.bass@enron.com | -3 | 11 |
-
-Rankings for: 2010-04
-
-✅ Top 3 Positive Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| eric.bass@enron.com | 0 | 2 |
-| johnny.palmer@enron.com | 0 | 8 |
-| don.baughman@enron.com | -1 | 11 |
-
-❌ Top 3 Negative Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| kayne.coulter@enron.com | -7 | 16 |
-| rhonda.denton@enron.com | -7 | 11 |
-| bobette.riner@ipgdirect.com | -4 | 6 |
-
-Rankings for: 2010-05
-
-✅ Top 3 Positive Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| bobette.riner@ipgdirect.com | 2 | 4 |
-| eric.bass@enron.com | 1 | 7 |
-| johnny.palmer@enron.com | 1 | 1 |
-
-❌ Top 3 Negative Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| don.baughman@enron.com | -11 | 23 |
-| lydia.delgado@enron.com | -6 | 8 |
-| john.arnold@enron.com | -5 | 10 |
-
-Rankings for: 2010-06
-
-✅ Top 3 Positive Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| johnny.palmer@enron.com | 6 | 10 |
-| sally.beck@enron.com | 5 | 13 |
-| eric.bass@enron.com | -1 | 1 |
-
-❌ Top 3 Negative Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| patti.thompson@enron.com | -6 | 12 |
-| don.baughman@enron.com | -5 | 17 |
-| john.arnold@enron.com | -5 | 15 |
-
-Rankings for: 2010-07
-
-✅ Top 3 Positive Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| bobette.riner@ipgdirect.com | 0 | 12 |
-| eric.bass@enron.com | -1 | 19 |
-| don.baughman@enron.com | -2 | 6 |
-
-❌ Top 3 Negative Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| john.arnold@enron.com | -3 | 7 |
-| rhonda.denton@enron.com | -3 | 3 |
-| don.baughman@enron.com | -2 | 6 |
-
-Rankings for: 2010-08
-
-✅ Top 3 Positive Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| don.baughman@enron.com | 2 | 2 |
-| sally.beck@enron.com | 1 | 25 |
-| eric.bass@enron.com | 0 | 2 |
-
-❌ Top 3 Negative Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| rhonda.denton@enron.com | -6 | 17 |
-| bobette.riner@ipgdirect.com | -5 | 9 |
-| johnny.palmer@enron.com | -4 | 8 |
-
-Rankings for: 2010-09
-
-✅ Top 3 Positive Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| rhonda.denton@enron.com | 2 | 5 |
-| bobette.riner@ipgdirect.com | 1 | 15 |
-| lydia.delgado@enron.com | 1 | 5 |
-
-❌ Top 3 Negative Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| eric.bass@enron.com | -8 | 15 |
-| don.baughman@enron.com | -7 | 7 |
-| john.arnold@enron.com | -7 | 13 |
-
-Rankings for: 2010-10
-
-✅ Top 3 Positive Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| eric.bass@enron.com | 1 | 9 |
-| kayne.coulter@enron.com | 1 | 3 |
-| bobette.riner@ipgdirect.com | 0 | 6 |
-
-❌ Top 3 Negative Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| patti.thompson@enron.com | -8 | 17 |
-| johnny.palmer@enron.com | -5 | 15 |
-| john.arnold@enron.com | -3 | 11 |
-
-Rankings for: 2010-11
-
-✅ Top 3 Positive Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| john.arnold@enron.com | 1 | 11 |
-| johnny.palmer@enron.com | 1 | 1 |
-| eric.bass@enron.com | -1 | 5 |
-
-❌ Top 3 Negative Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| patti.thompson@enron.com | -6 | 12 |
-| rhonda.denton@enron.com | -5 | 9 |
-| sally.beck@enron.com | -4 | 12 |
-
-Rankings for: 2010-12
-
-✅ Top 3 Positive Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| sally.beck@enron.com | 2 | 11 |
-| bobette.riner@ipgdirect.com | 0 | 8 |
-| eric.bass@enron.com | 0 | 2 |
-
-❌ Top 3 Negative Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| don.baughman@enron.com | -5 | 18 |
-| lydia.delgado@enron.com | -5 | 13 |
-| rhonda.denton@enron.com | -4 | 10 |
-
-Rankings for: 2011-01
-
-✅ Top 3 Positive Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| johnny.palmer@enron.com | 6 | 12 |
-| john.arnold@enron.com | 3 | 3 |
-| kayne.coulter@enron.com | 1 | 5 |
-
-❌ Top 3 Negative Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| bobette.riner@ipgdirect.com | -7 | 17 |
-| rhonda.denton@enron.com | -5 | 11 |
-| sally.beck@enron.com | -4 | 10 |
-
-Rankings for: 2011-02
-
-✅ Top 3 Positive Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| lydia.delgado@enron.com | 2 | 21 |
-| patti.thompson@enron.com | 1 | 3 |
-| don.baughman@enron.com | 0 | 2 |
-
-❌ Top 3 Negative Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| rhonda.denton@enron.com | -5 | 9 |
-| bobette.riner@ipgdirect.com | -3 | 3 |
-| john.arnold@enron.com | -3 | 19 |
-
-Rankings for: 2011-03
-
-✅ Top 3 Positive Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| lydia.delgado@enron.com | 5 | 7 |
-| patti.thompson@enron.com | 1 | 17 |
-| kayne.coulter@enron.com | 0 | 4 |
-
-❌ Top 3 Negative Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| eric.bass@enron.com | -7 | 9 |
-| john.arnold@enron.com | -6 | 10 |
-| sally.beck@enron.com | -6 | 12 |
-
-Rankings for: 2011-04
-
-✅ Top 3 Positive Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| eric.bass@enron.com | 3 | 11 |
-| lydia.delgado@enron.com | 3 | 20 |
-| john.arnold@enron.com | 0 | 2 |
-
-❌ Top 3 Negative Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| kayne.coulter@enron.com | -9 | 9 |
-| don.baughman@enron.com | -5 | 5 |
-| johnny.palmer@enron.com | -4 | 16 |
-
-Rankings for: 2011-05
-
-✅ Top 3 Positive Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| lydia.delgado@enron.com | 2 | 25 |
-| rhonda.denton@enron.com | 2 | 10 |
-| sally.beck@enron.com | 2 | 9 |
-
-❌ Top 3 Negative Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| eric.bass@enron.com | -12 | 16 |
-| john.arnold@enron.com | -7 | 11 |
-| don.baughman@enron.com | -4 | 12 |
-
-Rankings for: 2011-06
-
-✅ Top 3 Positive Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| lydia.delgado@enron.com | 2 | 6 |
-| sally.beck@enron.com | 2 | 2 |
-| don.baughman@enron.com | -1 | 3 |
-
-❌ Top 3 Negative Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| bobette.riner@ipgdirect.com | -5 | 11 |
-| patti.thompson@enron.com | -5 | 9 |
-| eric.bass@enron.com | -4 | 22 |
-
-Rankings for: 2011-07
-
-✅ Top 3 Positive Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| johnny.palmer@enron.com | 2 | 12 |
-| kayne.coulter@enron.com | 1 | 1 |
-| john.arnold@enron.com | 0 | 8 |
-
-❌ Top 3 Negative Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| bobette.riner@ipgdirect.com | -4 | 14 |
-| don.baughman@enron.com | -3 | 5 |
-| patti.thompson@enron.com | -3 | 27 |
-
-Rankings for: 2011-08
-
-✅ Top 3 Positive Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| bobette.riner@ipgdirect.com | 3 | 3 |
-| eric.bass@enron.com | 3 | 7 |
-| kayne.coulter@enron.com | 1 | 1 |
-
-❌ Top 3 Negative Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| johnny.palmer@enron.com | -8 | 15 |
-| sally.beck@enron.com | -6 | 14 |
-| lydia.delgado@enron.com | -4 | 14 |
-
-Rankings for: 2011-09
-
-✅ Top 3 Positive Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| johnny.palmer@enron.com | 3 | 9 |
-| eric.bass@enron.com | 0 | 13 |
-| john.arnold@enron.com | -1 | 1 |
-
-❌ Top 3 Negative Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| don.baughman@enron.com | -4 | 15 |
-| patti.thompson@enron.com | -3 | 11 |
-| bobette.riner@ipgdirect.com | -2 | 11 |
-
-Rankings for: 2011-10
-
-✅ Top 3 Positive Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| don.baughman@enron.com | 3 | 9 |
-| sally.beck@enron.com | 3 | 7 |
-| bobette.riner@ipgdirect.com | 1 | 1 |
-
-❌ Top 3 Negative Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| lydia.delgado@enron.com | -6 | 20 |
-| rhonda.denton@enron.com | -2 | 2 |
-| eric.bass@enron.com | -1 | 9 |
-
-Rankings for: 2011-11
-
-✅ Top 3 Positive Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| patti.thompson@enron.com | 7 | 13 |
-| don.baughman@enron.com | 2 | 8 |
-| eric.bass@enron.com | 1 | 1 |
-
-❌ Top 3 Negative Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| bobette.riner@ipgdirect.com | -10 | 16 |
-| kayne.coulter@enron.com | -8 | 16 |
-| john.arnold@enron.com | -3 | 11 |
-
-Rankings for: 2011-12
-
-✅ Top 3 Positive Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| john.arnold@enron.com | 2 | 4 |
-| johnny.palmer@enron.com | 1 | 3 |
-| kayne.coulter@enron.com | 0 | 9 |
-
-❌ Top 3 Negative Employees:
-| Employee | sentiment_score | message_count |
-| :--- | :---: | :---: |
-| bobette.riner@ipgdirect.com | -3 | 3 |
-| don.baughman@enron.com | -3 | 7 |
-| lydia.delgado@enron.com | -3 | 17 |
-
-# Flight Risk Identification
-Found 10 employees at flight risk.
-
-## Top 10 employees with the highest negative message count:
-| employee | start_date | end_date | negative_count |
-| :--- | :---: | :---: | :---: |
+| Employee | Window Start | Window End | Negative Count |
+|---|---|---|---|
 | rhonda.denton@enron.com | 2010-01-24 | 2010-02-23 | 5 |
 | bobette.riner@ipgdirect.com | 2010-01-09 | 2010-02-08 | 4 |
 | don.baughman@enron.com | 2009-12-24 | 2010-01-23 | 4 |
@@ -461,3 +107,91 @@ Found 10 employees at flight risk.
 | lydia.delgado@enron.com | 2009-12-14 | 2010-01-13 | 4 |
 | patti.thompson@enron.com | 2009-12-16 | 2010-01-15 | 4 |
 | sally.beck@enron.com | 2009-12-17 | 2010-01-16 | 4 |
+
+---
+
+## 🏆 24-Month Sentiment Summary
+
+### Top Positive Employees
+| Rank | Employee | Appearances in Top 3 |
+|---|---|---|
+| 1 | Eric Bass | 10 |
+| 2 | Bobette Riner | 8 |
+| 3 | Johnny Palmer | 7 |
+
+### Top Negative Employees
+| Rank | Employee | Appearances in Bottom 3 |
+|---|---|---|
+| 1 | John Arnold | 10 |
+| 2 | Don Baughman | 9 |
+| 3 | Kayne Coulter | 7 |
+
+
+
+---
+
+## 🐳 Running the Project (Docker)
+```bash
+# Build
+docker build -t employee-sentiment .
+
+# Run full pipeline
+docker run employee-sentiment
+
+# Run with local output mount
+docker run -v $(pwd)/outputs:/app/outputs employee-sentiment
+```
+
+No local Python environment needed. All dependencies locked in `requirements.txt`.
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| NLP Model | DistilBERT (HuggingFace Transformers) |
+| EDA &amp; Visualization | Pandas, Seaborn, Matplotlib |
+| Feature Engineering | Scikit-learn, Custom text features |
+| Flight-Risk Model | Scikit-learn regression ensemble |
+| Containerization | Docker |
+| Notebook | Jupyter |
+
+---
+
+## 📚 LLM Training Track
+
+As part of the internship curriculum, a parallel LLM study track was completed alongside this data project:
+
+**LangChain**
+- Prompt chaining and template management
+- Retrieval-Augmented Generation (RAG) workflows
+- Tool calling and agent construction patterns
+
+**LangGraph**
+- Stateful multi-agent graph orchestration
+- Node and edge design for complex agent flows
+- State management across multi-step reasoning
+
+These concepts directly informed subsequent agentic projects (Agentic RAG Telegram Bot with LangGraph, OpenSearch, Redis, Airflow).
+
+---
+
+## 📁 Repository Structure
+Employee-Sentimental-analysis/
+├── employee_sentiment_analysis.ipynb   ← Full pipeline notebook
+├── labeled_messages_with_scores.csv    ← Scored output (→ product team)
+├── test.csv                            ← Test split
+├── requirements.txt                    ← Locked dependencies
+├── Dockerfile                          ← Reproducible container
+├── .dockerignore
+├── Final_Report.docx                   ← Management deck
+├── visualizations/                     ← Seaborn EDA dashboards
+└── README.md
+
+---
+
+## 🏢 About This Project
+
+Completed as part of the **Data Analysis &amp; LLM Internship** at **Springer Capital**
+Aug–Nov 2025 · Remote · 300 hours
