@@ -14,32 +14,32 @@ End-to-end NLP pipeline analyzing **10,000+ employee email records** spanning 24
 ---
 
 ## 🏗️ Pipeline Architecture
-Raw Email Data
-│
-▼
+    Raw Email Data
+        │
+        ▼
 
-Data Cleaning          ← remove nulls, duplicates, encoding noise
-│
-▼
-Preprocessing          ← lowercase, punctuation removal,
-stopword filtering, tokenization
-│
-▼
-Feature Engineering    ← text_length | word_count | month_year
-│
-▼
-DistilBERT Fine-tuning ← ~97% of BERT-base accuracy
-40% smaller | 60% faster inference
-│
-▼
-Sentiment Scoring      ← per-employee monthly aggregation
-│
-▼
-Flight-Risk Model      ← 30-day rolling window
-rule-based heuristics + regression ensemble
-│
-▼
-Output CSVs            ← scored outputs → product team
+    Data Cleaning          ← remove nulls, duplicates, encoding noise
+        │
+        ▼
+    Preprocessing          ← lowercase, punctuation removal,
+    stopword filtering, tokenization
+        │
+        ▼
+    Feature Engineering    ← text_length | word_count | month_year
+        │
+        ▼
+    DistilBERT Fine-tuning ← ~97% of BERT-base accuracy
+    40% smaller | 60% faster inference
+        │
+        ▼
+    Sentiment Scoring      ← per-employee monthly aggregation
+        │
+        ▼
+    Flight-Risk Model      ← 30-day rolling window
+    rule-based heuristics + regression ensemble
+        │
+        ▼
+    Output CSVs            ← scored outputs → product team
 
 
 ---
