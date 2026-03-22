@@ -1,5 +1,5 @@
 # 🧠 Employee Sentiment Analysis — Work Report
-**Springer Capital | Data Analysis &amp; LLM Intern | Aug 2025 – Nov 2025 | Remote · 300 hrs**
+**Springer Capital | Data Analysis &amp; LLM Intern | Aug 2025 – Nov 2025 | Remote**
 
 &gt; Fine-tuned DistilBERT pipeline for employee sentiment scoring, 30-day flight-risk modeling (R²=0.81), and HR intelligence across 10,000+ records. Fully containerized in Docker.
 
@@ -197,3 +197,4 @@ These concepts directly informed subsequent agentic projects (Agentic RAG Telegr
 
 Completed as part of the **Data Analysis &amp; LLM Internship** at **Springer Capital**
 Aug to Nov 2025 · Remote
+By Shaswat Raj
