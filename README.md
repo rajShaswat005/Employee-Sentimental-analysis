@@ -178,20 +178,22 @@ These concepts directly informed subsequent agentic projects (Agentic RAG Telegr
 ---
 
 ## 📁 Repository Structure
-Employee-Sentimental-analysis/
-├── employee_sentiment_analysis.ipynb   ← Full pipeline notebook
-├── labeled_messages_with_scores.csv    ← Scored output (→ product team)
-├── test.csv                            ← Test split
-├── requirements.txt                    ← Locked dependencies
-├── Dockerfile                          ← Reproducible container
-├── .dockerignore
-├── Final_Report.docx                   ← Management deck
-├── visualizations/                     ← Seaborn EDA dashboards
-└── README.md
+
+
+    Employee-Sentimental-analysis/
+      ├── employee_sentiment_analysis.ipynb   ← Full pipeline notebook
+      ├── labeled_messages_with_scores.csv    ← Scored output (product team)
+      ├── test.csv                            ← Test split
+      ├── requirements.txt                    ← Locked dependencies
+      ├── Dockerfile                          ← Reproducible container
+      ├── .dockerignore
+      ├── Final_Report.docx                   ← Management deck
+      ├── visualizations/                     ← Seaborn EDA dashboards
+      └── README.md
 
 ---
 
 ## 🏢 About This Project
 
 Completed as part of the **Data Analysis &amp; LLM Internship** at **Springer Capital**
-Aug–Nov 2025 · Remote · 300 hours
+Aug to Nov 2025 · Remote
