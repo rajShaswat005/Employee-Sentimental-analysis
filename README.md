@@ -197,4 +197,9 @@ These concepts directly informed subsequent agentic projects (Agentic RAG Telegr
 
 Completed as part of the **Data Analysis &amp; LLM Internship** at **Springer Capital**
 Aug to Nov 2025 · Remote
+
+---
+
 By Shaswat Raj
+
+---
